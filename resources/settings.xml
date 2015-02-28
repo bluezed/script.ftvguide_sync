@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<settings>
+    <setting type="lsep" label="To enable the service a restart of Kodi is required"/>
+    <setting id="service.enabled" label="Service enabled" type="bool" default="false" />
+    <setting id="service.interval" label="Sync-Interval (minutes)" type="number" default="15" />
+    <setting id="webdav.protocol" label="Protocol" type="labelenum" default="http" values="http|https" />
+    <setting id="webdav.url" label="Server Url" type="text" default="webdav.smartdrive.web.de" />
+    <setting id="webdav.user" label="Username" type="text" default="" />
+    <setting id="webdav.password" label="Password" type="text" option="hidden" default="" />
+    <setting id="webdav.folder" label="Remote folder" type="text" default="/FTVGuideSync" />
+</settings>
