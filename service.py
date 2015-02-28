@@ -81,17 +81,17 @@ class Sync():
         ret = self.NO_CHANGE
         fPath = os.path.join(self.localFolder, fName)
         localMod = datetime.datetime.utcfromtimestamp(os.path.getmtime(fPath))
-        xbmc.log('[script.ftvguide_sync] Local file "'+fName+'":  ' + str(localMod), level=xbmc.LOGERROR)
+        xbmc.log('[script.ftvguide_sync] Local file "'+fName+'":  ' + str(localMod), level=xbmc.LOGNOTICE)
         remoteMod = self.getRemoteMod(fName)
-        xbmc.log('[script.ftvguide_sync] Remote file "'+fName+'": ' + str(remoteMod), level=xbmc.LOGERROR)
+        xbmc.log('[script.ftvguide_sync] Remote file "'+fName+'": ' + str(remoteMod), level=xbmc.LOGNOTICE)
         if remoteMod is None or localMod > remoteMod:
             ret = self.LOCAL_NEWER
-            xbmc.log('[script.ftvguide_sync] Local file "'+fName+'" is newer', level=xbmc.LOGNOTICE)
+            xbmc.log('[script.ftvguide_sync] Local file "'+fName+'" is newer', level=xbmc.LOGDEBUG)
         elif localMod < remoteMod:
             ret = self.REMOTE_NEWER
-            xbmc.log('[script.ftvguide_sync] Remote file "'+fName+'" is newer', level=xbmc.LOGNOTICE)
+            xbmc.log('[script.ftvguide_sync] Remote file "'+fName+'" is newer', level=xbmc.LOGDEBUG)
         else:
-            xbmc.log('[script.ftvguide_sync] Files "'+fName+'" appear the same', level=xbmc.LOGNOTICE)
+            xbmc.log('[script.ftvguide_sync] Files "'+fName+'" appear the same', level=xbmc.LOGDEBUG)
         return ret
 
     def getRemoteMod(self, fName):
