@@ -38,7 +38,7 @@ Here are the basic steps to install the FTV Guide Sync service onto your Kodi bo
 7. Enable the service, set the update interval and add your server details.                                    
  ![](http://s19.postimg.org/q1ehfaxr7/sync_step5.png)
 
-**Note:** After setting the service to enabled you have to restart Kodi for it to take effect!
+ **Note:** After setting the service to enabled you have to restart Kodi for it to take effect!
 Setting the service to disabled does not require a restart though.
 
 8. After the service has started running you should see the "source.db" and "settings.xml" appearing on your server
