@@ -7,7 +7,7 @@ This Service will try to sync your FTV Guide database and settings with a WebDAV
 
 For official support go to the forums on [tvaddons.ag](http://forums.tvaddons.ag/threads/22837-RELEASE-FTV-Guide)
 
-Download the package from [HERE](https://github.com/bluezed/script.ftvguide_sync/releases/download/0.1.1/script.ftvguide_sync.zip)
+Download the package from [HERE](https://github.com/bluezed/script.ftvguide_sync/releases/download/0.1.2/script.ftvguide_sync.zip)
 
 
 Here are the basic steps to install the FTV Guide Sync service onto your Kodi box.
