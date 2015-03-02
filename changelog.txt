@@ -1,4 +1,10 @@
 --------------------------
+FTV Guide Sync - 0.1.2
+--------------------------
++ Better exception handling
++ Added notifications
+
+--------------------------
 FTV Guide Sync - 0.1.1
 --------------------------
 + Minor code cosmetics

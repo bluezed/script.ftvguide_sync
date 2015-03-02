@@ -20,14 +20,22 @@
 #
 import xbmc
 import xbmcaddon
+import xbmcgui
 import os
 import datetime
 
 from resources.lib import easywebdav
 
 ADDON = xbmcaddon.Addon(id='script.ftvguide_sync')
+  
+    
+class SyncException(Exception):
+    def __init__(self, e):
+        msg = str(e)
+        xbmcgui.Dialog().ok('FTV Guide Sync', 'Error trying to connect to the WebDav-Server!\n\n{0}'.format(msg))
+        super(SyncException, self).__init__(msg)
 
-
+        
 class Sync():
 
     webdav = None
@@ -48,34 +56,39 @@ class Sync():
 
     def __init__(self):
         xbmc.log('[script.ftvguide_sync] Started...', level=xbmc.LOGNOTICE)
+        xbmcgui.Dialog().notification('FTV Guide Sync', 'Started...')
+        try:
+            self.webdav = easywebdav.connect(self.url,
+                                        username=self.user,
+                                        password=self.password,
+                                        protocol=self.protocol)
 
-        self.webdav = easywebdav.connect(self.url,
-                                    username=self.user,
-                                    password=self.password,
-                                    protocol=self.protocol)
+            if not self.webdav.exists(self.remoteFolder):
+                self.webdav.mkdir(self.remoteFolder)
+                xbmc.log('[script.ftvguide_sync] Folder created', level=xbmc.LOGNOTICE)
+            else:
+                xbmc.log('[script.ftvguide_sync] Folder exists', level=xbmc.LOGNOTICE)
 
-        if not self.webdav.exists(self.remoteFolder):
-            self.webdav.mkdir(self.remoteFolder)
-            xbmc.log('[script.ftvguide_sync] Folder created', level=xbmc.LOGNOTICE)
-        else:
-            xbmc.log('[script.ftvguide_sync] Folder exists', level=xbmc.LOGNOTICE)
-
-        self.doSync()
+            self.doSync()
+        except Exception as e:
+            raise SyncException(e)
 
     def doSync(self):
         xbmc.log('[script.ftvguide_sync] Sync called', level=xbmc.LOGNOTICE)
+        try:
+            ret = self.checkFile(self.settings)
+            if ret == self.LOCAL_NEWER:
+                self.uploadFile(self.settings)
+            elif ret == self.REMOTE_NEWER:
+                self.downloadFile(self.settings)
 
-        ret = self.checkFile(self.settings)
-        if ret == self.LOCAL_NEWER:
-            self.uploadFile(self.settings)
-        elif ret == self.REMOTE_NEWER:
-            self.downloadFile(self.settings)
-
-        ret = self.checkFile(self.db)
-        if ret == self.LOCAL_NEWER:
-            self.uploadFile(self.db)
-        elif ret == self.REMOTE_NEWER:
-            self.downloadFile(self.db)
+            ret = self.checkFile(self.db)
+            if ret == self.LOCAL_NEWER:
+                self.uploadFile(self.db)
+            elif ret == self.REMOTE_NEWER:
+                self.downloadFile(self.db)
+        except Exception as e:
+            raise SyncException(e)
 
     def checkFile(self, fName):
         ret = self.NO_CHANGE
@@ -106,8 +119,8 @@ class Sync():
                     # 'Sat, 28 Feb 2015 11:29:30 GMT'
                     mTime = datetime.datetime.strptime(fItem.mtime, '%a, %d %b %Y %H:%M:%S %Z')
                     break
-        except:
-            xbmc.log('[script.ftvguide_sync] Error getting remote file listing', level=xbmc.LOGERROR)
+        except Exception as e:
+            raise SyncException(e)
         return mTime
 
     def uploadFile(self, fName):
@@ -117,8 +130,8 @@ class Sync():
             self.webdav.upload(localPath, remotePath)
             self.updateModTime(fName)
             xbmc.log('[script.ftvguide_sync] File "'+fName+'" uploaded', level=xbmc.LOGNOTICE)
-        except:
-            xbmc.log('[script.ftvguide_sync] Error uploading file "'+fName+'"', level=xbmc.LOGERROR)
+        except Exception as e:
+            raise SyncException(e)
 
     def downloadFile(self, fName):
         localPath = os.path.join(self.localFolder, fName)
@@ -127,8 +140,8 @@ class Sync():
             self.webdav.download(remotePath, localPath)
             self.updateModTime(fName)
             xbmc.log('[script.ftvguide_sync] File "'+fName+'" downloaded', level=xbmc.LOGNOTICE)
-        except:
-            xbmc.log('[script.ftvguide_sync] Error downloading file "'+fName+'"', level=xbmc.LOGERROR)
+        except Exception as e:
+            raise SyncException(e)
 
     def updateModTime(self, fName):
         localPath = os.path.join(self.localFolder, fName)
